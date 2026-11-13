@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="server_name">Rockstar RolePLay</string>
+    <string name="connect_hint">برای اتصال، دکمهٔ بازی را بزنید</string>
+    <string name="launcher_credit">توسعهٔ لانچر: T.meYeBiYar</string>
+    <string name="launcher_server_address">5.57.37.215:7777</string>
+    <string name="launcher_connect">ورود به سرور</string>
+    <string name="launcher_missing_data_title">دیتای بازی ناقص است</string>
+    <string name="launcher_missing_data_message">فایل‌های لازم برای اجرای بازی پیدا نشدند:\n%1$s\n\nدیتای کامل و قانونی GTA: San Andreas را در این مسیر قرار بده:\n%2$s</string>
+    <string name="launcher_storage_permission_message">برای دسترسی به دیتای بازی، دسترسی به همهٔ فایل‌ها را فعال کن و دوباره بزن.</string>
+    <string name="launcher_ok">باشه</string>
     <string name="common_google_play_services_notification_ticker">Google Play services error</string>
     <string name="common_google_play_services_notification_needs_installation_title">An application requires installation of Google Play services.</string>
     <string name="common_google_play_services_notification_needs_update_title">An application requires an update for Google Play services.</string>
@@ -68,11 +77,11 @@
     <string name="time_remaining">Time remaining: %1$s</string>
     <string name="time_remaining_notification">%1$s left</string>
     <string name="hello_world">Hello world!</string>
-    <string name="menu_settings">Settings</string>
-    <string name="dialog_join_from_launcher_msg">Вам необходимо зайти в игру используя лаунчер</string>
-    <string name="dialog_join_from_launcher_ok">Принять</string>
-    <string name="downloadinfobottom">Внимание! <font color='#5E5E5E'> Не закрывайте приложение во время установки. Если у вас возникли какие-то проблемы, советуем обратиться в</font> Техническую поддержку!</string>
-    <string name="image_load">Изображение загружается</string>
+    <string name="menu_settings">تنظیمات</string>
+    <string name="dialog_join_from_launcher_msg">برای ورود به بازی از لانچر استفاده کنید.</string>
+    <string name="dialog_join_from_launcher_ok">باشه</string>
+    <string name="downloadinfobottom">توجه! <font color='#D5C9E8'>هنگام نصب، برنامه را نبندید. اگر مشکلی پیش آمد، با پشتیبانی تماس بگیرید.</font></string>
+    <string name="image_load">تصویر در حال بارگذاری است</string>
     <string name="arrow_left"><![CDATA[<]]></string>
     <string name="string_right"><![CDATA[>]]></string>
     <string name="autoshop_max_speed">Макс. скорость</string>
@@ -82,4 +91,34 @@
     <string name="hud_no_load">hud load</string>
     <string name="recovery_pass"><u>Восстановить пароль</u></string>
     <string name="egor_plakapenka_194_kdkd"><font color='#ffffff'>- egor_plakapenka[112]:</font><font color='#ffffff'> kdkdkd </font></string>
+    <string name="nav_server">سرور</string>
+    <string name="nav_settings">تنظیمات</string>
+    <string name="nav_forum">انجمن</string>
+    <string name="nav_donate">حمایت مالی</string>
+    <string name="server_select_title">سرور را انتخاب کنید</string>
+    <string name="server_select_hint">سروری را که در آن بازی می‌کنید انتخاب کنید</string>
+    <string name="back">بازگشت</string>
+    <string name="loading_game_files">در حال دانلود فایل‌های بازی…</string>
+    <string name="retry">تلاش دوباره</string>
+    <string name="unpacking_files">در حال استخراج فایل‌ها…</string>
+    <string name="download_progress">%1$s از %2$s (%3$s بر ثانیه)</string>
+    <string name="settings_title">تنظیمات</string>
+    <string name="privacy_policy">سیاست حفظ حریم خصوصی</string>
+    <string name="nickname_label">نام کاربری</string>
+    <string name="nickname_hint">نام کاربری بازی را وارد کنید</string>
+    <string name="notifications_label">دریافت اعلان‌ها</string>
+    <string name="reset_settings">بازنشانی تنظیمات</string>
+    <string name="manage_game_data">اطلاعات داده‌های بازی</string>
+    <string name="validate_game_files">بررسی سلامت فایل‌ها</string>
+    <string name="confirm_manage_game_data">اطلاعات محل ذخیرهٔ داده‌های بازی نمایش داده شود؟</string>
+    <string name="game_data_location_info">داده‌های بازی در مسیر /storage/emulated/0/ROCKSTAR قرار دارند.</string>
+    <string name="confirm_reset_game_settings">تنظیمات بازی بازنشانی شود؟</string>
+    <string name="install_game_first">ابتدا بازی را نصب کنید.</string>
+    <string name="settings_reset_success">تنظیمات با موفقیت بازنشانی شدند.</string>
+    <string name="settings_already_default">تنظیمات از قبل پیش‌فرض هستند.</string>
+    <string name="network_error_title">خطا</string>
+    <string name="network_error_message">اتصال به اینترنت برقرار نیست.</string>
+    <string name="close">بستن</string>
+    <string name="apk_install_error">خطای نصب: فایل پیدا نشد.</string>
+    <string name="launcher_artwork_description">تصویر اصلی لانچر Rockstar RolePLay</string>
 </resources>

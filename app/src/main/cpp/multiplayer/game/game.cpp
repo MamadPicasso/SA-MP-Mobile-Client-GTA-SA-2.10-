@@ -464,7 +464,7 @@ bool CGame::InitialiseRenderWare() {
     TextureDatabaseRuntime::Load("gta_int", false, TextureDatabaseFormat::DF_Default);
     TextureDatabaseRuntime::Load("cutscene", false, TextureDatabaseFormat::DF_Default);
     TextureDatabaseRuntime::Load("player", false, TextureDatabaseFormat::DF_PVR);
-    TextureDatabaseRuntime::Load("menu", false, TextureDatabaseFormat::DF_PVR);
+    TextureDatabaseRuntime::Load("menu", false, TextureDatabaseFormat::DF_DXT);
 #else
 	TextureDatabaseRuntime::Load("samp", false, TextureDatabaseFormat::DF_DXT);
 	TextureDatabaseRuntime::Load("gui", false, TextureDatabaseFormat::DF_DXT);

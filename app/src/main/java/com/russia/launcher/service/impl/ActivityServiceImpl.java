@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.russia.game.R;
+import com.russia.launcher.config.Config;
 import com.russia.launcher.service.ActivityService;
 
 import java.io.File;
@@ -71,8 +72,8 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public boolean isGameFileInstall(Activity activity, String filePath) {
-        String fileFullPath = activity.getExternalFilesDir(null).toString()
-                .concat(filePath);
+        String relativePath = filePath.startsWith("/") ? filePath.substring(1) : filePath;
+        String fileFullPath = new File(Config.getGameDataDirectory(), relativePath).getAbsolutePath();
 
         File file = new File(fileFullPath);
         return file.exists();

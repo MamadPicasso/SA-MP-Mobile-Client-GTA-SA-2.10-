@@ -6,9 +6,9 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="colorAccent">#ffF6D20F</item>
+        <item name="colorAccent">@color/launcher_purple</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
-        <item name="colorSurface">#ffF6D20F</item>
+        <item name="colorSurface">@color/launcher_white</item>
     </style>
 
     <style name="AppBaseTheme" parent="Theme.MaterialComponents.Light" />
@@ -31,6 +31,9 @@
     </style>
 
     <style name="AppTheme.NoActionBar">
+        <item name="colorAccent">@color/launcher_purple</item>
+        <item name="colorPrimary">@color/launcher_purple</item>
+        <item name="colorPrimaryDark">@color/launcher_purple_dark</item>
         <item name="android:forceDarkAllowed">false</item>
         <item name="android:windowBackground">@drawable/back_monitoring</item>
         <item name="android:windowContentOverlay">@null</item>
@@ -42,7 +45,7 @@
     </style>
 
     <style name="AppTheme.Splash">
-        <item name="android:windowBackground">@drawable/back_splash</item>
+        <item name="android:windowBackground">@drawable/lc_loading</item>
     </style>
 
     <style name="TextStyle" parent="@android:style/TextAppearance">

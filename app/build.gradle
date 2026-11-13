@@ -1,8 +1,12 @@
 plugins {
     id 'com.android.application'
-    id 'com.google.gms.google-services'
-    id 'com.google.firebase.crashlytics'
     id 'org.jetbrains.kotlin.android'
+}
+
+def firebaseConfigPresent = file('google-services.json').isFile()
+if (firebaseConfigPresent) {
+    apply plugin: 'com.google.gms.google-services'
+    apply plugin: 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -10,9 +14,11 @@ android {
     productFlavors {
         ver_release {
             dimension "version"
-            manifestPlaceholders = [appName:"MOBILE RUSSIA"]
-            firebaseCrashlytics {
-                nativeSymbolUploadEnabled true
+            manifestPlaceholders = [appName:"Rockstar RolePLay Launcher"]
+            if (firebaseConfigPresent) {
+                firebaseCrashlytics {
+                    nativeSymbolUploadEnabled true
+                }
             }
 
             externalNativeBuild {
@@ -25,11 +31,13 @@ android {
             dimension "version"
             applicationIdSuffix ".test"
             versionNameSuffix "-test"
-            manifestPlaceholders = [appName:"MOBILE RUSSIA TEST"]
-
-            firebaseCrashlytics {
-                nativeSymbolUploadEnabled false
+            manifestPlaceholders = [appName:"Rockstar RolePLay Launcher Test"]
+            if (firebaseConfigPresent) {
+                firebaseCrashlytics {
+                    nativeSymbolUploadEnabled false
+                }
             }
+
         }
     }
 
@@ -141,5 +149,4 @@ dependencies {
     implementation 'androidx.viewpager2:viewpager2:1.1.0'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
     implementation "com.github.skydoves:colorpickerview:2.3.0"
-    apply plugin: 'com.google.gms.google-services'
 }

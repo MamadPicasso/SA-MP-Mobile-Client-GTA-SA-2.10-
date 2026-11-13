@@ -19,6 +19,12 @@
 #include <netdb.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <string.h>
+#include <ctime>
+#include <sys/time.h>
+#include <time.h>
 #include "str_obfuscator.hpp"
 
 uintptr_t g_libGTASA = 0;
@@ -175,11 +181,6 @@ void handler3(int signum, siginfo_t* info, void* contextPtr)
 {
 	ucontext* context = (ucontext_t*)contextPtr;
 
-	if (act3_old.sa_sigaction)
-	{
-		act3_old.sa_sigaction(signum, info, contextPtr);
-	}
-
 	if (info->si_signo == SIGBUS)
 	{
 		PrintBuildCrashInfo();
@@ -191,16 +192,15 @@ void handler3(int signum, siginfo_t* info, void* contextPtr)
 		CStackTrace::printBacktrace();
 	}
 
+	if (act3_old.sa_sigaction)
+	{
+		act3_old.sa_sigaction(signum, info, contextPtr);
+	}
 }
 
 void handler(int signum, siginfo_t *info, void* contextPtr)
 {
 	ucontext* context = (ucontext_t*)contextPtr;
-
-	if (act_old.sa_sigaction)
-	{
-		act_old.sa_sigaction(signum, info, contextPtr);
-	}
 
 	if(info->si_signo == SIGSEGV)
 	{
@@ -213,16 +213,16 @@ void handler(int signum, siginfo_t *info, void* contextPtr)
 
 		CStackTrace::printBacktrace();
 	}
+
+	if (act_old.sa_sigaction)
+	{
+		act_old.sa_sigaction(signum, info, contextPtr);
+	}
 }
 
 void handler2(int signum, siginfo_t* info, void* contextPtr)
 {
 	ucontext* context = (ucontext_t*)contextPtr;
-
-	if (act2_old.sa_sigaction)
-	{
-		act2_old.sa_sigaction(signum, info, contextPtr);
-	}
 
 	if (info->si_signo == SIGFPE)
 	{
@@ -236,16 +236,15 @@ void handler2(int signum, siginfo_t* info, void* contextPtr)
 
 	}
 
+	if (act2_old.sa_sigaction)
+	{
+		act2_old.sa_sigaction(signum, info, contextPtr);
+	}
 }
 
 void handler1(int signum, siginfo_t* info, void* contextPtr)
 {
 	auto context = (ucontext_t*)contextPtr;
-
-	if (act1_old.sa_sigaction)
-	{
-		act1_old.sa_sigaction(signum, info, contextPtr);
-	}
 
 	if (info->si_signo == SIGABRT)
 	{
@@ -259,6 +258,10 @@ void handler1(int signum, siginfo_t* info, void* contextPtr)
 		CStackTrace::printBacktrace();
 	}
 
+	if (act1_old.sa_sigaction)
+	{
+		act1_old.sa_sigaction(signum, info, contextPtr);
+	}
 }
 
 extern "C"
@@ -279,6 +282,7 @@ extern "C"
 JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
 {
 	javaVM = vm;
+	Log("JNI_OnLoad started");
 
 	g_libGTASA = CUtil::FindLib("libGTASA.so");
 
@@ -315,12 +319,17 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
 
 	CHook::InitHookStuff();
 
+	Log("Installing native hooks");
 	InstallSpecialHooks();
+	Log("Native hooks installed");
 	InitRenderWareFunctions();
+	Log("RenderWare functions initialized");
 
 	ApplyPatches_level0();
+	Log("Level-zero patches applied");
 
 	CLoader::loadBassLib();
+	Log("BASS library loaded");
 
 	struct sigaction act{};
 	act.sa_sigaction = handler;
@@ -346,6 +355,7 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
 	act3.sa_flags = SA_SIGINFO;
 	sigaction(SIGBUS, &act3, &act3_old);
 
+	Log("JNI_OnLoad completed");
 	return JNI_VERSION_1_6;
 }
 
@@ -364,64 +374,88 @@ void LogLong(const char* message)
     }
 }
 
+namespace {
+constexpr char NATIVE_LOG_FILE[] = "/storage/emulated/0/ROCKSTAR/Log/log.txt";
+
+void AppendNativeLog(const char* level, const char* message)
+{
+	struct timeval now{};
+	gettimeofday(&now, nullptr);
+
+	std::tm localTime{};
+	localtime_r(&now.tv_sec, &localTime);
+
+	char timestamp[32]{};
+	strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", &localTime);
+
+	char line[1024]{};
+	int lineLength = snprintf(
+		line,
+		sizeof(line),
+		"%s.%03ld %s %s\n",
+		timestamp,
+		static_cast<long>(now.tv_usec / 1000),
+		level,
+		message
+	);
+	if (lineLength <= 0) {
+		return;
+	}
+
+	size_t remaining = static_cast<size_t>(lineLength);
+	if (remaining >= sizeof(line)) {
+		remaining = sizeof(line) - 1;
+	}
+
+	int fd = open(NATIVE_LOG_FILE, O_WRONLY | O_CREAT | O_APPEND | O_CLOEXEC, 0666);
+	if (fd < 0) {
+		__android_log_print(ANDROID_LOG_ERROR, "AXL", "Cannot open native log: %s", strerror(errno));
+		return;
+	}
+
+	const char* cursor = line;
+	while (remaining > 0) {
+		ssize_t written = write(fd, cursor, remaining);
+		if (written < 0 && errno == EINTR) {
+			continue;
+		}
+		if (written <= 0) {
+			break;
+		}
+		cursor += written;
+		remaining -= static_cast<size_t>(written);
+	}
+	close(fd);
+}
+}
+
 void Log(const char *fmt, ...)
 {
-	static char buffer[512] {};
-
-	memset(buffer, 0, sizeof(buffer));
+	char buffer[512]{};
 
 	va_list arg;
 	va_start(arg, fmt);
 	vsnprintf(buffer, sizeof(buffer), fmt, arg);
 	va_end(arg);
 
+	AppendNativeLog("NATIVE", buffer);
 	firebase::crashlytics::Log(buffer);
 	__android_log_write(ANDROID_LOG_INFO, "AXL", buffer);
-
-#if USE_FILE_LOG
-	//if(pDebug) pDebug->AddMessage(buffer);
-	static FILE* flLog = nullptr;
-
-	if(flLog == nullptr && g_pszStorage != nullptr)
-	{
-		sprintf(buffer, "%slog.txt", g_pszStorage);
-		flLog = fopen(buffer, "ab");
-	}
-
-	if(flLog == nullptr) return;
-	fprintf(flLog, "%s\n", buffer);
-	fflush(flLog);
-#endif
 }
 
 void CrashLog(const char* fmt, ...)
 {
-	static char buffer[512] {};
-	memset(buffer, 0, sizeof(buffer));
-
+	char buffer[512]{};
 	va_list arg;
 	va_start(arg, fmt);
 	vsnprintf(buffer, sizeof(buffer), fmt, arg);
 	va_end(arg);
 
+	AppendNativeLog("CRASH", buffer);
 #ifdef NDEBUG
 	firebase::crashlytics::Log(buffer);
 #endif
 	__android_log_write(ANDROID_LOG_FATAL, "AXL", buffer);
-
-#if USE_FILE_LOG
-	static FILE* flLog = nullptr;
-
-	if (flLog == nullptr && g_pszStorage != nullptr)
-	{
-		sprintf(buffer, "%scrash_log.txt", g_pszStorage);
-		flLog = fopen(buffer, "ab");
-	}
-
-	if (flLog == nullptr) return;
-	fprintf(flLog, "%s\n", buffer);
-	fflush(flLog);
-#endif
 }
 
 uint32_t GetTickCount()
@@ -444,6 +478,7 @@ Java_com_russia_game_core_Samp_initSAMP(JNIEnv *env, jobject thiz, jfloat maxFps
     g_pszRootStorage = new char[strlen(dirChars) + 1];
     strcpy(g_pszRootStorage, dirChars);
 
+	Log("Native app storage directory: %s", g_pszRootStorage);
     env->ReleaseStringUTFChars(directory, dirChars);
 
 	CSettings::maxFps = (int)maxFps;

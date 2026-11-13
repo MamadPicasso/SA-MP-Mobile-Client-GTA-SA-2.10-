@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/policy_bg">
+    android:background="@drawable/launcher_purple_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layoutDirection="rtl"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -16,19 +17,21 @@
 
         <ImageView
             android:id="@+id/imageView36"
-            android:layout_width="180dp"
-            android:layout_height="180dp"
+            android:layout_width="280dp"
+            android:layout_height="130dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/logo_download" />
+            app:srcCompat="@drawable/lc_launcher" />
 
         <LinearLayout
             android:id="@+id/linearLayout11"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:background="@drawable/policy_dialog_bg"
+            android:background="@drawable/launcher_input_background"
             android:gravity="center"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -49,7 +52,7 @@
                 android:shadowDx="0"
                 android:shadowDy="0"
                 android:shadowRadius="5"
-                android:text="Запуская это приложение вы соглашаетесь с Политикой конфиденциальности"
+                android:text="با اجرای این برنامه، با سیاست حفظ حریم خصوصی موافقت می‌کنید."
                 android:textColor="#FFFFFF"
                 android:textSize="18sp" />
 
@@ -64,7 +67,7 @@
                     android:layout_width="125dp"
                     android:layout_height="50dp"
                     android:layout_margin="@dimen/_5sdp"
-                    android:background="@drawable/policy_button_bg">
+                    android:background="@drawable/launcher_button_outline">
 
                     <TextView
                         android:id="@+id/textView18"
@@ -75,7 +78,7 @@
                         android:shadowDx="0"
                         android:shadowDy="0"
                         android:shadowRadius="5"
-                        android:text="ОТМЕНА"
+                        android:text="لغو"
                         android:textColor="#FFFFFF"
                         android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -89,7 +92,7 @@
                     android:layout_width="125dp"
                     android:layout_height="50dp"
                     android:layout_margin="@dimen/_5sdp"
-                    android:background="@drawable/policy_button_bg">
+                    android:background="@drawable/launcher_button_primary">
 
                     <TextView
                         android:id="@+id/textView19"
@@ -100,7 +103,7 @@
                         android:shadowDx="0"
                         android:shadowDy="0"
                         android:shadowRadius="5"
-                        android:text="ОК"
+                        android:text="باشه"
                         android:textColor="#FFFFFF"
                         android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="parent"

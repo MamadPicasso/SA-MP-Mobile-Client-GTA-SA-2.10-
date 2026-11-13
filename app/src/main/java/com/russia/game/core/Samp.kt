@@ -20,10 +20,12 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.firebase.FirebaseApp
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.russia.game.R
 import com.russia.game.gui.hud.HudManager
 import com.russia.launcher.async.task.CacheChecker.isGameCacheValid
+import com.russia.launcher.logging.LauncherLog
 import java.io.File
 import java.io.IOException
 import java.security.MessageDigest
@@ -39,19 +41,27 @@ class Samp : GTASA() {
     private external fun initSAMP(maxFps: Float, directory: String)
 
     override fun onCreate(bundle: Bundle?) {
+        LauncherLog.initialize()
+        LauncherLog.info("Samp", "onCreate begin")
 
         activity = this
 
         val display = Companion.windowManager.defaultDisplay
         maxFps = display.refreshRate
+        LauncherLog.info("Samp", "display refresh rate=$maxFps")
 
         val internalDir = File(filesDir, "AudioConfig")
         clearDir(internalDir)
         copyFromAssets(internalDir)
 
+        LauncherLog.info("Samp", "calling native initSAMP")
         initSAMP(maxFps, filesDir.toString())
+        LauncherLog.info("Samp", "native initSAMP returned")
+        LauncherLog.info("Samp", "calling GTASA onCreate")
         super.onCreate(bundle)
+        LauncherLog.info("Samp", "GTASA onCreate returned")
         init()
+        LauncherLog.info("Samp", "Samp initialization complete")
     }
     private fun clearDir(dir: File) {
         try {
@@ -134,8 +144,10 @@ class Samp : GTASA() {
     }
 
     fun exitGame() {
-        FirebaseCrashlytics.getInstance().deleteUnsentReports()
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false)
+        if (FirebaseApp.getApps(applicationContext).isNotEmpty()) {
+            FirebaseCrashlytics.getInstance().deleteUnsentReports()
+            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false)
+        }
         finishAndRemoveTask()
         System.exit(0)
     }

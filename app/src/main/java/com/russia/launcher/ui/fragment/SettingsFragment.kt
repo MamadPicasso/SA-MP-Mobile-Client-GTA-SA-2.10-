@@ -13,25 +13,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.russia.game.R
 import com.russia.game.core.Samp
-import com.russia.launcher.async.dto.response.FileInfo
-import com.russia.launcher.async.task.CacheChecker
-import com.russia.launcher.async.task.CacheChecker.getInvalidFilesList
 import com.russia.launcher.config.Config
-import com.russia.launcher.domain.enums.DownloadType
-import com.russia.launcher.domain.messages.InfoMessage
 import com.russia.launcher.service.ActivityService
 import com.russia.launcher.service.impl.ActivityServiceImpl
 import com.russia.launcher.storage.NativeStorage
-import com.russia.launcher.ui.activity.LoaderActivity
 import com.russia.launcher.ui.dialogs.ConfirmDialog
 import com.russia.launcher.ui.dialogs.EnterNicknameDialog
-import com.russia.launcher.utils.FileUtils
-import com.russia.launcher.utils.MainUtils
-import com.russia.launcher.utils.MainUtils.Companion.type
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 
 class SettingsFragment : Fragment(), View.OnClickListener {
@@ -49,7 +36,7 @@ class SettingsFragment : Fragment(), View.OnClickListener {
         inflate.findViewById<View>(R.id.discordButton).setOnClickListener(this)
         inflate.findViewById<View>(R.id.resetSettings).setOnClickListener(this)
         inflate.findViewById<View>(R.id.reinstallGame).setOnClickListener(this)
-        inflate.findViewById<View>(R.id.validateCache).setOnClickListener(this)
+        inflate.findViewById<View>(R.id.validateCache).visibility = View.GONE
         inflate.findViewById<View>(R.id.telegramButton).setOnClickListener(this)
         initUserData()
         return inflate
@@ -87,11 +74,6 @@ class SettingsFragment : Fragment(), View.OnClickListener {
                 performReinstallGameButtonAction()
             }
 
-            R.id.validateCache -> {
-                view.startAnimation(animation)
-                performValidateCacheButtonAction()
-            }
-
             R.id.nick_edit -> performNickEditFieldOnClickAction()
             else -> {}
         }
@@ -102,50 +84,22 @@ class SettingsFragment : Fragment(), View.OnClickListener {
     }
 
     private fun performReinstallGameButtonAction() {
-        val confirmDialog = ConfirmDialog(activity, "Переустановить игру?")
+        val confirmDialog = ConfirmDialog(activity, getString(R.string.confirm_manage_game_data))
         confirmDialog.setOnDialogCloseListener { isConfirm: Boolean -> onConfirmReinstallFinished(isConfirm) }
         confirmDialog.createDialog()
     }
 
     private fun onConfirmReinstallFinished(isConfirm: Boolean) {
         if (isConfirm) {
-            val gameDirectory = File(requireActivity().getExternalFilesDir(null).toString())
-            FileUtils.delete(gameDirectory)
-            type = DownloadType.RELOAD_GAME_FILES
-            startActivity(Intent(activity, LoaderActivity::class.java))
+            activityService?.showInfoMessage(
+                getString(R.string.game_data_location_info),
+                requireActivity()
+            )
         }
-    }
-
-    private fun performValidateCacheButtonAction() {
-        val progressDialog = requireActivity().findViewById<ConstraintLayout>(R.id.progressDialog)
-        progressDialog.visibility = View.VISIBLE
-
-        GlobalScope.launch {
-            val filesList = CacheChecker.getInvalidFilesList(requireActivity())
-            withContext(Dispatchers.Main) {
-                doAfterCacheChecked(filesList)
-
-                progressDialog.visibility = View.GONE
-            }
-        }
-    }
-
-    private fun doAfterCacheChecked(fileToReloadArray: MutableList<FileInfo>) {
-        if (fileToReloadArray.isEmpty()) {
-            activityService?.showInfoMessage("Файлы в порядке!", this.activity)
-        } else {
-            validateCache(fileToReloadArray)
-        }
-    }
-
-    private fun validateCache(filesToReloadList: MutableList<FileInfo>) {
-        MainUtils.FILES_TO_RELOAD = filesToReloadList
-        type = DownloadType.RELOAD_GAME_FILES
-        startActivity(Intent(activity, LoaderActivity::class.java))
     }
 
     private fun performResetSettingsButtonAction() {
-        val confirmDialog = ConfirmDialog(activity, "Сбросить настройки игры?")
+        val confirmDialog = ConfirmDialog(activity, getString(R.string.confirm_reset_game_settings))
         confirmDialog.setOnDialogCloseListener { isConfirm: Boolean -> onConfirmResetSettingsFinished(isConfirm) }
         confirmDialog.createDialog()
     }
@@ -155,15 +109,15 @@ class SettingsFragment : Fragment(), View.OnClickListener {
             return
         }
         if (!activityService!!.isGameFileInstall(activity, Config.SETTINGS_FILE_PATH)) {
-            activityService!!.showInfoMessage("Сначала установите игру", activity)
+            activityService!!.showInfoMessage(getString(R.string.install_game_first), activity)
             return
         }
-        val settingsFile = File(requireActivity().getExternalFilesDir(null).toString() + Config.SETTINGS_FILE_PATH)
+        val settingsFile = File(Config.getGameDataDirectory(), Config.SETTINGS_FILE_PATH.substring(1))
         if (settingsFile.exists()) {
             settingsFile.delete()
-            activityService!!.showInfoMessage("Вы успешно сбросили настройки!", activity)
+            activityService!!.showInfoMessage(getString(R.string.settings_reset_success), activity)
         } else {
-            activityService!!.showInfoMessage("Настройки по умолчанию уже установлены", activity)
+            activityService!!.showInfoMessage(getString(R.string.settings_already_default), activity)
         }
     }
 
