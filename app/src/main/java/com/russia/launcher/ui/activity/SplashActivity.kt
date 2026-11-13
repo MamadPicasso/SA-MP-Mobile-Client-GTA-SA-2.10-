@@ -18,6 +18,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.russia.game.R
 import com.russia.game.databinding.ActivitySplashBinding
+import com.russia.launcher.logging.LauncherLog
 
 
 class SplashActivity : AppCompatActivity() {
@@ -43,6 +44,8 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        LauncherLog.initialize()
+        LauncherLog.info("SplashActivity", "onCreate")
         if (FirebaseApp.getApps(applicationContext).isNotEmpty()) {
             FirebaseCrashlytics.getInstance().deleteUnsentReports()
             FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
@@ -64,6 +67,7 @@ class SplashActivity : AppCompatActivity() {
         })
 
         if (!isOnline) {
+            LauncherLog.warn("SplashActivity", "device appears offline")
             val builder = AlertDialog.Builder(this)
             builder.setTitle(getString(R.string.network_error_title))
                 .setMessage(getString(R.string.network_error_message))
@@ -87,9 +91,11 @@ class SplashActivity : AppCompatActivity() {
         }
 
         if (permissionsToRequest.isNotEmpty()) {
+            LauncherLog.info("SplashActivity", "requesting permissions: ${permissionsToRequest.joinToString()}")
             ActivityCompat.requestPermissions(this, permissionsToRequest.toTypedArray(), REQUEST_ID)
         } else {
             permissionsGranded = true
+            LauncherLog.info("SplashActivity", "required runtime permissions already granted")
             startIfReady()
         }
     }
@@ -102,6 +108,10 @@ class SplashActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == REQUEST_ID) {
+            LauncherLog.info(
+                "SplashActivity",
+                "permission result: ${grantResults.joinToString()}"
+            )
             for (i in grantResults.indices) {
                 if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                     permissionsGranded = true
@@ -113,6 +123,7 @@ class SplashActivity : AppCompatActivity() {
 
     fun startIfReady() {
         if (permissionsGranded && animationEnded) {
+            LauncherLog.info("SplashActivity", "splash complete; opening main launcher")
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }

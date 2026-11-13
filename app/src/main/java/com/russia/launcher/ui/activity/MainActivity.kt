@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import com.russia.game.R
 import com.russia.game.core.Samp
 import com.russia.launcher.config.Config
+import com.russia.launcher.logging.LauncherLog
 import com.russia.launcher.storage.NativeStorage
 import org.apache.commons.lang3.StringUtils
 import java.io.File
@@ -23,6 +24,8 @@ import java.io.File
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        LauncherLog.initialize()
+        LauncherLog.info("MainActivity", "onCreate")
         setTheme(R.style.AppBaseTheme)
         setContentView(R.layout.activity_simple_main)
         window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
@@ -36,11 +39,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startGame() {
-        if (!ensureGameStorageAccess()) return
+        LauncherLog.info("MainActivity", "start button pressed")
+        if (!ensureGameStorageAccess()) {
+            LauncherLog.warn("MainActivity", "game launch paused for storage permission")
+            return
+        }
 
         val gameDataDirectory = Config.getGameDataDirectory()
+        LauncherLog.info("MainActivity", "checking game data at ${gameDataDirectory.absolutePath}")
         val missingFiles = findMissingGameData(gameDataDirectory)
         if (missingFiles.isNotEmpty()) {
+            LauncherLog.error("MainActivity", "required game data missing: ${missingFiles.joinToString()}")
             AlertDialog.Builder(this)
                 .setTitle(R.string.launcher_missing_data_title)
                 .setMessage(
@@ -55,21 +64,14 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
+        LauncherLog.info("MainActivity", "required game data check passed")
         setDefaultServer()
 
-        val log = File(gameDataDirectory, "log.txt")
-        log.delete()
-
-        // FIXME
-        val aaaaaaaaaa = File(gameDataDirectory, "CINFO.BIN")
-        aaaaaaaaaa.delete()
-
-        val bbbbbbbb = File(gameDataDirectory, "models/MINFO.BIN")
-        bbbbbbbb.delete()
-
+        LauncherLog.info("MainActivity", "saving launcher settings")
         NativeStorage.addClientProperty("password", StringUtils.EMPTY, this)
         val intent = Intent(this, Samp::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        LauncherLog.info("MainActivity", "starting Samp activity")
         startActivity(intent)
         finish()
     }
@@ -102,6 +104,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setDefaultServer() {
+        LauncherLog.info("MainActivity", "setting server ${Config.SERVER_IP}:${Config.SERVER_PORT}")
         NativeStorage.addClientProperty("ip", Config.SERVER_IP, this)
         NativeStorage.addClientProperty("port", Config.SERVER_PORT.toString(), this)
         NativeStorage.addClientProperty("server", "0", this)
@@ -109,8 +112,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun ensureGameStorageAccess(): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (Environment.isExternalStorageManager()) return true
+            if (Environment.isExternalStorageManager()) {
+                LauncherLog.info("MainActivity", "all-files storage access granted")
+                return true
+            }
 
+            LauncherLog.warn("MainActivity", "all-files storage access is not granted")
             Toast.makeText(
                 this,
                 getString(R.string.launcher_storage_permission_message),
@@ -136,6 +143,10 @@ class MainActivity : AppCompatActivity() {
             ) == PackageManager.PERMISSION_GRANTED
 
         if (!readGranted || !writeGranted) {
+            LauncherLog.warn(
+                "MainActivity",
+                "legacy storage permission missing: read=$readGranted write=$writeGranted"
+            )
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(
@@ -146,6 +157,7 @@ class MainActivity : AppCompatActivity() {
             )
             return false
         }
+        LauncherLog.info("MainActivity", "legacy storage permissions granted")
         return true
     }
 
