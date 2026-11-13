@@ -1,10 +1,9 @@
 package com.russia.launcher.storage;
 
-import static com.russia.launcher.config.Config.NATIVE_SETTINGS_FILE_PATH;
-
 import android.content.Context;
 import android.widget.Toast;
 
+import com.russia.launcher.config.Config;
 import com.russia.launcher.domain.messages.ErrorMessage;
 
 import org.ini4j.InvalidFileFormatException;
@@ -21,13 +20,16 @@ public class NativeStorage {
 
     public static void addClientProperty(String propertyName, String value, Context context) {
         try {
-            File f = new File(context.getExternalFilesDir(null) + NATIVE_SETTINGS_FILE_PATH);
-
-            if (!f.exists()) {
-                return;
+            File f = new File(Config.getGameDataDirectory(), Config.NATIVE_SETTINGS_FILE_PATH.substring(1));
+            File parent = f.getParentFile();
+            if (parent != null && !parent.exists() && !parent.mkdirs()) {
+                throw new IOException("Could not create native settings directory");
+            }
+            if (!f.exists() && !f.createNewFile()) {
+                throw new IOException("Could not create native settings file");
             }
 
-            Wini w = new Wini(new File(context.getExternalFilesDir(null) + NATIVE_SETTINGS_FILE_PATH));
+            Wini w = new Wini(f);
             w.put(CLIENT_SECTION_NAME, propertyName, value);
             w.store();
         } catch (InvalidFileFormatException e) {
@@ -42,7 +44,7 @@ public class NativeStorage {
         String value = null;
 
         try {
-            Wini w = new Wini(new File(context.getExternalFilesDir(null) + NATIVE_SETTINGS_FILE_PATH));
+            Wini w = new Wini(new File(Config.getGameDataDirectory(), Config.NATIVE_SETTINGS_FILE_PATH.substring(1)));
             value = w.get(CLIENT_SECTION_NAME, property);
             w.store();
         } catch (IOException ignored) {

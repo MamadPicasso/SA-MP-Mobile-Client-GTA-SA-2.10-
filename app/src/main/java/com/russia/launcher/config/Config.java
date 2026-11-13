@@ -2,7 +2,15 @@ package com.russia.launcher.config;
 
 import com.russia.launcher.NetworkService;
 
+import android.os.Environment;
+
+import java.io.File;
+
 public class Config {
+    public static final String GAME_DATA_DIRECTORY_NAME = "ROCKSTAR";
+    public static final String SERVER_IP = "5.57.37.215";
+    public static final int SERVER_PORT = 7777;
+
     public static final String APK_FILE_NAME = "russia.apk";
 
     public static final String ZIP_FILES_BASE_ADR = NetworkService.FILES_BASE_ADR + "zip/";
@@ -22,6 +30,10 @@ public class Config {
 
     public static final String NATIVE_SETTINGS_FILE_PATH = "/SAMP/settings.ini";
     public static final String SETTINGS_FILE_PATH = "/gta_sa.set";
+
+    public static File getGameDataDirectory() {
+        return new File(Environment.getExternalStorageDirectory(), GAME_DATA_DIRECTORY_NAME);
+    }
 
     public static String createBillingUri(String serverId, String serverName, String sum, String nickname, String mail, String captcha) {
         return String.format(

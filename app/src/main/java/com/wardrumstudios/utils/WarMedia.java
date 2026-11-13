@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Environment;
 
 import com.nvidia.devtech.NvUtil;
+import com.russia.launcher.config.Config;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -20,15 +21,10 @@ public class WarMedia extends WarGamepad
     public String GetGameBaseDirectory() {
         if (Environment.getExternalStorageState().equals("mounted"))
         {
-            try
-            {
-                File externalFilesDir = getExternalFilesDir(null);
-                String absolutePath = externalFilesDir.getAbsolutePath();
-                this.baseDirectoryRoot = absolutePath.substring(0, absolutePath.indexOf("/Android"));
-                return externalFilesDir.getAbsolutePath() + "/";
-            } catch (Exception e)
-            {
-            }
+            File externalStorageRoot = Environment.getExternalStorageDirectory();
+            File gameDataDirectory = Config.getGameDataDirectory();
+            this.baseDirectoryRoot = externalStorageRoot.getAbsolutePath();
+            return gameDataDirectory.getAbsolutePath() + "/";
         }
         return "";
     }

@@ -166,11 +166,11 @@ class HudManager : Chat() {
     fun UpdateWanted(wantedLVL: Int) {
         activity.runOnUiThread {
             for (i in hud_wanted.indices) {
-                if (i < wantedLVL) {
-                    hud_wanted[i].visibility = View.VISIBLE
-                } else {
-                    hud_wanted[i].visibility = View.GONE
-                }
+                hud_wanted[i].setColorFilter(
+                    if (i < wantedLVL) Color.parseColor("#F3D479") else Color.parseColor("#89909B"),
+                    PorterDuff.Mode.SRC_IN
+                )
+                hud_wanted[i].visibility = View.VISIBLE
             }
         }
     }
@@ -212,8 +212,8 @@ class HudManager : Chat() {
 
     fun initServerLogo() {
         activity.runOnUiThread {
-            val serverColor = Storage.getProperty(StorageElements.SERVER_COLOR, activity)
-            val serverName = Storage.getProperty(StorageElements.SERVER_NAME, activity)
+            val serverColor = Storage.getProperty(StorageElements.SERVER_COLOR, activity) ?: "#FFFFFF"
+            val serverName = Storage.getProperty(StorageElements.SERVER_NAME, activity) ?: "Rockstar RolePLay"
             val serverMulti = Storage.getProperty(StorageElements.SERVER_MULTI, activity)
             val img = activity.findViewById<ImageView>(R.id.hud_logo_img)
             val text = activity.findViewById<TextView>(R.id.hud_logo_text)
@@ -291,7 +291,8 @@ class HudManager : Chat() {
         hud_wanted.add(activity.findViewById(R.id.hud_star_5))
         hud_wanted.add(activity.findViewById(R.id.hud_star_6))
         for (i in hud_wanted.indices) {
-            hud_wanted[i].visibility = View.GONE
+            hud_wanted[i].setColorFilter(Color.parseColor("#89909B"), PorterDuff.Mode.SRC_IN)
+            hud_wanted[i].visibility = View.VISIBLE
         }
 
         binding.menuButton.setOnClickListener {

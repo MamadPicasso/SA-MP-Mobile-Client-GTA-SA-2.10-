@@ -3,7 +3,11 @@ package com.russia.launcher.ui.activity
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
+import android.content.pm.PackageManager
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -11,13 +15,17 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.russia.game.R
 import com.russia.game.core.Samp
 import com.russia.launcher.async.dto.response.FileInfo
 import com.russia.launcher.async.task.CacheChecker
+import com.russia.launcher.config.Config
 import com.russia.launcher.config.Config.DONATE_URL
 import com.russia.launcher.config.Config.FORUM_URL
 import com.russia.launcher.domain.enums.DownloadType
@@ -25,7 +33,6 @@ import com.russia.launcher.domain.enums.StorageElements
 import com.russia.launcher.service.impl.ActivityServiceImpl
 import com.russia.launcher.storage.NativeStorage
 import com.russia.launcher.storage.Storage
-import com.russia.launcher.ui.dialogs.EnterLockedServerPasswordDialog
 import com.russia.launcher.ui.fragment.MonitoringFragment
 import com.russia.launcher.ui.fragment.SettingsFragment
 import com.russia.launcher.utils.MainUtils
@@ -87,6 +94,8 @@ class MainActivity : AppCompatActivity() {
         rouletteButton = findViewById(R.id.rouletteButton)
         donateButton = findViewById(R.id.donateButton)
         playButton = findViewById(R.id.playButton)
+        findViewById<View>(R.id.forumNav).visibility = View.GONE
+        findViewById<View>(R.id.donateNav).visibility = View.GONE
         monitoringFragment = MonitoringFragment()
         settingsFragment = SettingsFragment()
         if (savedInstanceState != null && savedInstanceState.getBoolean(IS_AFTER_LOADING_KEY)) {
@@ -163,40 +172,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startGame() {
-        val log = File(getExternalFilesDir(null).toString() + "/log.txt")
+        if (!ensureGameStorageAccess()) return
+
+        val gameDataDirectory = Config.getGameDataDirectory()
+        val requiredDirectories = listOf("data", "models", "SAMP")
+        if (!gameDataDirectory.isDirectory || requiredDirectories.any { !File(gameDataDirectory, it).isDirectory }) {
+            ActivityServiceImpl.showErrorMessage(
+                "Game data not found. Install GTA: San Andreas from Google Play and check /storage/emulated/0/ROCKSTAR.",
+                this
+            )
+            return
+        }
+
+        setDefaultServer()
+
+        val log = File(gameDataDirectory, "log.txt")
         log.delete()
 
         // FIXME
-        val aaaaaaaaaa = File(getExternalFilesDir(null).toString() + "/CINFO.BIN")
+        val aaaaaaaaaa = File(gameDataDirectory, "CINFO.BIN")
         aaaaaaaaaa.delete()
 
-        val bbbbbbbb = File(getExternalFilesDir(null).toString() + "/models/MINFO.BIN")
+        val bbbbbbbb = File(gameDataDirectory, "models/MINFO.BIN")
         bbbbbbbb.delete()
 
-        val nickname = NativeStorage.getClientProperty("name", this)
-        val selectedServer = NativeStorage.getClientProperty("server", this)
-        if (StringUtils.isBlank(nickname)) {
-            ActivityServiceImpl.showErrorMessage("Укажите ник!", this)
-            onClickSettings()
-            return
-        }
-        if (StringUtils.isBlank(selectedServer)) {
-            ActivityServiceImpl.showErrorMessage("Выберите сервер", this)
-            onClickMonitoring()
-            return
-        }
-        val tmp = Storage.getProperty(StorageElements.SERVER_LOCKED, this)
-        var serverLockedValue = 0
-        if (tmp != null) serverLockedValue = tmp.toInt()
-        if (SERVER_LOCKED_VALUE == serverLockedValue) {
-            val dialog = EnterLockedServerPasswordDialog(this)
-            dialog.setOnDialogCloseListener { password: String -> saveServerPassword(password) }
-            dialog.createDialog()
-            return
-        }
-        if (SERVER_LOCKED_VALUE != serverLockedValue) {
-            NativeStorage.addClientProperty("password", StringUtils.EMPTY, this)
-        }
+        NativeStorage.addClientProperty("password", StringUtils.EMPTY, this)
         val intent = Intent(this, Samp::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(intent)
@@ -204,15 +204,58 @@ class MainActivity : AppCompatActivity() {
          this.finish();
     }
 
-    private fun saveServerPassword(password: String) {
-        NativeStorage.addClientProperty("password", password, this)
-        startActivity(Intent(this, Samp::class.java))
-        finish()
+    private fun setDefaultServer() {
+         NativeStorage.addClientProperty("ip", Config.SERVER_IP, this)
+         NativeStorage.addClientProperty("port", Config.SERVER_PORT.toString(), this)
+         NativeStorage.addClientProperty("server", "0", this)
     }
 
     private fun onClickSettings() {
+        if (!ensureGameStorageAccess()) return
         setTextColor(settingsButton, settingsTV, settingsImage)
         replaceFragment(settingsFragment)
+    }
+
+    private fun ensureGameStorageAccess(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Environment.isExternalStorageManager()) return true
+
+            Toast.makeText(
+                this,
+                "Allow all-files access for this launcher, then try again.",
+                Toast.LENGTH_LONG
+            ).show()
+            startActivity(
+                Intent(
+                    Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                    Uri.parse("package:$packageName")
+                )
+            )
+            return false
+        }
+
+        val readGranted = ContextCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.READ_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
+        val writeGranted = Build.VERSION.SDK_INT < Build.VERSION_CODES.Q ||
+            ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+
+        if (!readGranted || !writeGranted) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ),
+                STORAGE_PERMISSION_REQUEST
+            )
+            return false
+        }
+        return true
     }
 
     private fun onClickDonate() {
@@ -263,7 +306,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val IS_AFTER_LOADING_KEY = "isAfterLoading"
         private const val GAME_DIRECTORY_EMPTY_SIZE = 0
-        private const val SERVER_LOCKED_VALUE = 1
         private const val TEST_MODE_ON_VALUE = "1"
+        private const val STORAGE_PERMISSION_REQUEST = 229
     }
 }

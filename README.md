@@ -1,5 +1,8 @@
-SA-MP Mobile Client (GTA: SA 2.10)
-Refactored & Maintained by NoobCoder
+# Rockstar RolePLay Launcher
+
+Single-server SA-MP mobile launcher for GTA: San Andreas 2.10.
+
+Launcher developed by T.meYeBiYar.
 
 I've refactored this client to fix a lot of the persistent crashes, memory leaks, and multiplayer bugs present in older mobile sources, turning it into a much more stable base for further development.
 
@@ -13,24 +16,38 @@ Refactored Base: Optimized for smoother performance and easier ongoing maintenan
 ⚠️ Note: Single-player mode is intentionally disabled. This build is strictly configured for SA-MP multiplayer connections.
 
 🛠️ Environment & Prerequisites
-Android NDK: 28
+Android target: API 36 (Android 16)
+Android SDK Platform: 36
+Android ABIs: ARMv7 (32-bit) and ARMv8 (64-bit)
+
+Android NDK: 28.0.13004108
+Android CMake: required by `app/src/main/cpp/CMakeLists.txt`
 
 JDK: 21
 
-Game Cache: Requires clean GTA: SA v2.10 data files.
+Firebase: provide your project's `app/google-services.json` locally; it is not included in this repository.
 
-📂 Key Source Files
-If you're looking to modify configurations or core hooks, start here:
+Game Cache: Requires GTA: SA v2.10 data files.
 
-main.cpp — Server IP, port configuration, and connection logic.
+Server: 5.57.37.215:7777
 
-Streaming.cpp — File streaming and archive hooks.
+Key configuration files:
 
-game.cpp — Core game engine logic and internal hooks.
+- `app/src/main/java/com/russia/launcher/config/Config.java` — server address and public game-data path.
+- `app/src/main/java/com/russia/launcher/ui/activity/MainActivity.kt` — checks game data and launches the server.
+- `app/src/main/java/com/wardrumstudios/utils/WarMedia.java` — passes the game-data path to the native engine.
 
 🚀 Setup & Build Instructions
-Open main.cpp and set your server's IP and port.
+The launcher connects directly to the configured server. Change `SERVER_IP` and `SERVER_PORT` in `app/src/main/java/com/russia/launcher/config/Config.java` to update its address.
 
-Build the APK using NDK 28 and Java 21.
+Install the Android SDK Platform 36, NDK 28.0.13004108, and CMake in Android Studio's SDK Manager, then build the release-flavor debug APK with:
+
+```powershell
+.\gradlew.bat :app:assembleVer_releaseDebug
+```
+
+For GitHub Actions, add the contents of your Firebase `google-services.json` as the `GOOGLE_SERVICES_JSON` repository secret, then run **Android build** from the Actions tab. The APK is uploaded as a workflow artifact.
 
 Make sure the target device has the GTA: SA 2.10 game cache installed, then run the client.
+
+The existing game-file download and update URLs still point to the original project services. Replace those with your own asset and manifest URLs before relying on clean installs or updates.

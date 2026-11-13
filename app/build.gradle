@@ -10,7 +10,7 @@ android {
     productFlavors {
         ver_release {
             dimension "version"
-            manifestPlaceholders = [appName:"MOBILE RUSSIA"]
+            manifestPlaceholders = [appName:"Rockstar RolePLay Launcher"]
             firebaseCrashlytics {
                 nativeSymbolUploadEnabled true
             }
@@ -25,7 +25,7 @@ android {
             dimension "version"
             applicationIdSuffix ".test"
             versionNameSuffix "-test"
-            manifestPlaceholders = [appName:"MOBILE RUSSIA TEST"]
+            manifestPlaceholders = [appName:"Rockstar RolePLay Launcher Test"]
 
             firebaseCrashlytics {
                 nativeSymbolUploadEnabled false

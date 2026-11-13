@@ -53,7 +53,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4.0dip"
                         android:fontFamily="@font/pt_root_ui_medium"
-                        android:text="Мониторинг"
+                        android:text="Server"
                         android:textColor="@color/menuTextEnable"
                         android:textSize="@dimen/_8sdp" />
                 </LinearLayout>
@@ -87,7 +87,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4.0dip"
                         android:fontFamily="@font/pt_root_ui_medium"
-                        android:text="Настройки"
+                        android:text="Settings"
                         android:textColor="@color/menuTextDisable"
                         android:textSize="@dimen/_8sdp" />
                 </LinearLayout>
@@ -139,7 +139,8 @@
                 android:layout_height="@dimen/_50sdp"
                 android:layout_weight="1.0"
                 android:background="@drawable/navigationbottom4"
-                android:gravity="bottom|center">
+                android:gravity="bottom|center"
+                android:id="@+id/forumNav">
 
                 <LinearLayout
                     android:id="@+id/rouletteButton"
@@ -174,7 +175,8 @@
                 android:layout_height="@dimen/_50sdp"
                 android:layout_weight="1.0"
                 android:background="@drawable/navigationbottom5"
-                android:gravity="bottom|center">
+                android:gravity="bottom|center"
+                android:id="@+id/donateNav">
 
                 <LinearLayout
                     android:id="@+id/donateButton"

@@ -15,32 +15,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.gson.GsonBuilder
 import com.russia.game.databinding.ActivitySplashBinding
-import com.russia.launcher.NetworkService
-import com.russia.launcher.async.dto.response.GameFileInfoDto
-import com.russia.launcher.async.dto.response.LatestVersionInfoDto
-import com.russia.launcher.async.dto.response.MonitoringDataLoaderListener
-import com.russia.launcher.async.dto.response.ServersList
-import com.russia.launcher.async.task.CacheChecker
-import com.russia.launcher.config.Config
-import com.russia.launcher.domain.enums.DownloadType
-import com.russia.launcher.utils.MainUtils
-import okhttp3.OkHttpClient
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
-import kotlin.system.exitProcess
 
 
 class SplashActivity : AppCompatActivity() {
     private var permissionsGranded = false
-    private var apkVersionChecked = false
-    private var monitoringDataLoaded = false
-    private var filesListLoaded = false
     private var animationEnded = false
     // var gpuDetected             = false
 
@@ -52,26 +31,7 @@ class SplashActivity : AppCompatActivity() {
         //Manifest.permission.POST_NOTIFICATIONS // 13+ bug
     )
 
-    private var networkService: NetworkService
     private lateinit var binding: ActivitySplashBinding
-
-    init {
-        val gson = GsonBuilder().setLenient().create()
-
-        val okHttpClient = OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.SECONDS) // Таймаут на подключение
-            .readTimeout(10, TimeUnit.SECONDS)    // Таймаут на чтение
-            .writeTimeout(10, TimeUnit.SECONDS)   // Таймаут на запись
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl(Config.LIVE_RUSSIA_RESOURCE_SERVER_URL)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .client(okHttpClient) // Устанавливаем OkHttpClient с таймаутами
-            .build()
-
-        networkService = retrofit.create(NetworkService::class.java)
-    }
 
     private val isOnline: Boolean
         get() {
@@ -111,41 +71,7 @@ class SplashActivity : AppCompatActivity() {
             runOnUiThread { builder.create().show() }
         }
 
-        ServersList.load(
-            this,
-            networkService,
-            object : MonitoringDataLoaderListener {
-                override fun monitoringDataLoadedSuccess() {
-                    monitoringDataLoaded = true
-                    startIfReady()
-                }
-            }
-        )
-
-        loadFilesList()
-        checkVersion()
         checkPermissions()
-
-    }
-
-    private fun loadFilesList() {
-        val call = networkService.filesList
-
-        call?.enqueue(object : Callback<GameFileInfoDto> {
-            override fun onResponse(call: Call<GameFileInfoDto>, response: Response<GameFileInfoDto>) {
-                if (response.isSuccessful) {
-                    response.body()?.let { CacheChecker.setFilesList(this@SplashActivity, it) }
-                }
-                filesListLoaded = true
-                startIfReady()
-            }
-
-            override fun onFailure(call: Call<GameFileInfoDto>, t: Throwable) {
-                Log.d("tag", "onFailure = " + t.message);
-                filesListLoaded = true
-                startIfReady()
-            }
-        })
     }
 
     private fun checkPermissions() {
@@ -183,52 +109,11 @@ class SplashActivity : AppCompatActivity() {
     }
 
     fun startIfReady() {
-        if (permissionsGranded && apkVersionChecked && filesListLoaded && monitoringDataLoaded && animationEnded/*&& gpuDetected*/) {
+        if (permissionsGranded && animationEnded) {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
     }
-
-    private fun checkVersion() {
-        val latestVersionInfoCall = networkService?.latestVersionInfoDto
-        latestVersionInfoCall?.enqueue(object : Callback<LatestVersionInfoDto?> {
-            override fun onResponse(call: Call<LatestVersionInfoDto?>, response: Response<LatestVersionInfoDto?>) {
-                if (!response.isSuccessful) {
-                    finish()
-                    exitProcess(0)
-                }
-                val currentVersion = currentVersion
-                val latestVersion: Int = response.body()?.version?.toInt() ?: 0
-                MainUtils.LATEST_APK_INFO = response.body()
-                if (currentVersion >= latestVersion) {
-                    apkVersionChecked = true
-                    startIfReady()
-                    return
-                }
-                MainUtils.type = DownloadType.UPDATE_APK
-                startActivity(Intent(this@SplashActivity, LoaderActivity::class.java))
-            }
-
-            override fun onFailure(call: Call<LatestVersionInfoDto?>, t: Throwable) {
-                finish()
-                exitProcess(0)
-            }
-        })
-    }
-
-
-    private val currentVersion: Int
-        get() {
-            val pm = this.packageManager
-            try {
-                val pInfo = pm.getPackageInfo(this.packageName, 0)
-                return pInfo.versionCode
-            } catch (e1: PackageManager.NameNotFoundException) {
-                e1.printStackTrace()
-            }
-            finish()
-            exitProcess(0)
-        }
 
     public override fun onDestroy() {
         super.onDestroy()

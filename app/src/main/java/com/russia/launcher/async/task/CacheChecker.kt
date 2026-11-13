@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import com.russia.launcher.async.dto.response.FileInfo
 import com.russia.launcher.async.dto.response.GameFileInfoDto
+import com.russia.launcher.config.Config
 import com.russia.launcher.utils.MainUtils
 import java.io.File
 import java.io.FileInputStream
@@ -76,11 +77,11 @@ object CacheChecker {
     @JvmStatic
     fun getInvalidFilesList(activity: Activity): MutableList<FileInfo> {
         val filesToReload: MutableList<FileInfo> = mutableListOf()
-        val externalFilesDir = activity.getExternalFilesDir(null)
+        val gameDataDirectory = Config.getGameDataDirectory()
         val allFiles = getFilesList(activity).files
 
         for (file in allFiles) {
-            val localFile = File(externalFilesDir, file.path)
+            val localFile = File(gameDataDirectory, file.path)
 
             if(!localFile.exists()) {
                 filesToReload.add(file)
