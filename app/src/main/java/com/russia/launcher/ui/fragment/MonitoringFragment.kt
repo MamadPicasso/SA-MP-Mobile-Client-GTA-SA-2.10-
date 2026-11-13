@@ -3,6 +3,7 @@ package com.russia.launcher.ui.fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.os.Bundle
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.russia.game.R
