@@ -244,7 +244,7 @@ class LoaderActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             } else {
-                ActivityServiceImpl.showErrorMessage("Ошибка установки: файл не найден", this)
+                ActivityServiceImpl.showErrorMessage(getString(R.string.apk_install_error), this)
                 finish()
                 exitProcess(EXIT_SUCCESS_STATUS)
             }

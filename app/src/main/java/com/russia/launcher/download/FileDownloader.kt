@@ -1,5 +1,6 @@
 package com.russia.launcher.download
 
+import com.russia.game.R
 import com.russia.launcher.NetworkService
 import com.russia.launcher.async.dto.response.FileInfo
 import com.russia.launcher.config.Config.APK_FILE_NAME
@@ -96,7 +97,7 @@ class FileDownloader(
                 lastTime = currentTime
             }
 
-            val text = String.format("%s из %s (%s / сек.)",
+            val text = loaderActivity.getString(R.string.download_progress,
                 BytesTo.convert(totalDownloadedSize),
                 BytesTo.convert(totalFilesSize),
                 BytesTo.convert(curSpeed)
@@ -153,7 +154,7 @@ class FileDownloader(
 
         //
         loaderActivity.runOnUiThread {
-            loaderActivity.speedText?.text = "Распаковка ..."
+            loaderActivity.speedText?.text = loaderActivity.getString(R.string.unpacking_files)
         }
 
         while (zipEntry != null) {

@@ -4,7 +4,8 @@
     android:clipChildren="false"
     android:clipToPadding="false"
     android:orientation="vertical"
-    android:background="@drawable/settings_bg"
+    android:layoutDirection="rtl"
+    android:background="@drawable/launcher_purple_background"
     android:paddingLeft="@dimen/_14sdp"
     android:paddingRight="@dimen/_14sdp"
     android:paddingTop="@dimen/_18sdp" >
@@ -27,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/pt_root_ui_medium"
-                android:text="Настройки"
+                android:text="@string/settings_title"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_20sdp" />
 
@@ -37,8 +38,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_8sdp"
                 android:fontFamily="@font/pt_root_ui_bold"
-                android:text="Политика конфиденциальности"
-                android:textColor="@color/blue"
+                android:text="@string/privacy_policy"
+                android:textColor="@color/launcher_purple_light"
                 android:textSize="@dimen/_12sdp" />
 
             <TextView
@@ -47,7 +48,7 @@
                 android:layout_marginTop="@dimen/_8sdp"
                 android:alpha="0.5"
                 android:fontFamily="@font/pt_root_ui_medium"
-                android:text="Ваш никнейм"
+                android:text="@string/nickname_label"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_10sdp" />
 
@@ -56,7 +57,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/_40sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:background="@drawable/nik_rectangle2"
+                android:background="@drawable/launcher_input_background"
                 android:orientation="horizontal" >
 
                 <ImageView
@@ -74,7 +75,7 @@
                     android:digits="qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_"
                     android:fontFamily="@font/pt_root_ui_regular"
                     android:gravity="center_vertical"
-                    android:hint="Введите игровой никнейм"
+                    android:hint="@string/nickname_hint"
                     android:maxLines="1"
                     android:paddingRight="@dimen/_10sdp"
                     android:singleLine="true"
@@ -97,7 +98,7 @@
                     android:layout_marginRight="@dimen/_minus10sdp"
                     android:layout_weight="1.0"
                     android:fontFamily="@font/pt_root_ui_bold"
-                    android:text="Получать уведомления"
+                    android:text="@string/notifications_label"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_13sdp" />
 
@@ -116,10 +117,10 @@
                 android:id="@+id/resetSettings"
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/_45sdp"
-                android:background="@drawable/button_red_stroke_rectangle"
+                android:background="@drawable/launcher_button_outline"
                 android:fontFamily="@font/pt_root_ui_medium"
                 android:gravity="center"
-                android:text="Сбросить настройки"
+                android:text="@string/reset_settings"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_12sdp" />
 
@@ -128,10 +129,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/_45sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:background="@drawable/button_red_rectangle"
+                android:background="@drawable/launcher_button_primary"
                 android:fontFamily="@font/pt_root_ui_medium"
                 android:gravity="center"
-                android:text="Переустановить игру"
+                android:text="@string/manage_game_data"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_13sdp" />
 
@@ -140,10 +141,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/_45sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:background="@drawable/button_red_rectangle"
+                android:background="@drawable/launcher_button_primary"
                 android:fontFamily="@font/pt_root_ui_medium"
                 android:gravity="center"
-                android:text="Проверить целостность файлов"
+                android:text="@string/validate_game_files"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_13sdp"
                 android:visibility="gone" />

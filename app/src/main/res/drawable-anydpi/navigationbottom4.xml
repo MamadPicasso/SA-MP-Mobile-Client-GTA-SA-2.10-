@@ -2,9 +2,9 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt">
     <item>
         <shape>
-            <gradient android:startColor="#FF05466D"
-                android:centerColor="#FF056AA3"
-                android:endColor="#FF056AA3"
+            <gradient android:startColor="#FF2A1647"
+                android:centerColor="#FF422466"
+                android:endColor="#FF422466"
                 android:angle="180"
                 android:type="linear"/>
         </shape>

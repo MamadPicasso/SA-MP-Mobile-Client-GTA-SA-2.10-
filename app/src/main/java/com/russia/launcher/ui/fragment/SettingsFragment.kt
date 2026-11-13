@@ -84,7 +84,7 @@ class SettingsFragment : Fragment(), View.OnClickListener {
     }
 
     private fun performReinstallGameButtonAction() {
-        val confirmDialog = ConfirmDialog(activity, "Переустановить игру?")
+        val confirmDialog = ConfirmDialog(activity, getString(R.string.confirm_manage_game_data))
         confirmDialog.setOnDialogCloseListener { isConfirm: Boolean -> onConfirmReinstallFinished(isConfirm) }
         confirmDialog.createDialog()
     }
@@ -92,14 +92,14 @@ class SettingsFragment : Fragment(), View.OnClickListener {
     private fun onConfirmReinstallFinished(isConfirm: Boolean) {
         if (isConfirm) {
             activityService?.showInfoMessage(
-                "Manage the Google Play game data in /storage/emulated/0/ROCKSTAR.",
+                getString(R.string.game_data_location_info),
                 requireActivity()
             )
         }
     }
 
     private fun performResetSettingsButtonAction() {
-        val confirmDialog = ConfirmDialog(activity, "Сбросить настройки игры?")
+        val confirmDialog = ConfirmDialog(activity, getString(R.string.confirm_reset_game_settings))
         confirmDialog.setOnDialogCloseListener { isConfirm: Boolean -> onConfirmResetSettingsFinished(isConfirm) }
         confirmDialog.createDialog()
     }
@@ -109,15 +109,15 @@ class SettingsFragment : Fragment(), View.OnClickListener {
             return
         }
         if (!activityService!!.isGameFileInstall(activity, Config.SETTINGS_FILE_PATH)) {
-            activityService!!.showInfoMessage("Сначала установите игру", activity)
+            activityService!!.showInfoMessage(getString(R.string.install_game_first), activity)
             return
         }
         val settingsFile = File(Config.getGameDataDirectory(), Config.SETTINGS_FILE_PATH.substring(1))
         if (settingsFile.exists()) {
             settingsFile.delete()
-            activityService!!.showInfoMessage("Вы успешно сбросили настройки!", activity)
+            activityService!!.showInfoMessage(getString(R.string.settings_reset_success), activity)
         } else {
-            activityService!!.showInfoMessage("Настройки по умолчанию уже установлены", activity)
+            activityService!!.showInfoMessage(getString(R.string.settings_already_default), activity)
         }
     }
 

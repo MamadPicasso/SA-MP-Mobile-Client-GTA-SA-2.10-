@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.russia.game.R
 import com.russia.game.databinding.ActivitySplashBinding
 
 
@@ -64,9 +65,9 @@ class SplashActivity : AppCompatActivity() {
 
         if (!isOnline) {
             val builder = AlertDialog.Builder(this)
-            builder.setTitle("Ошибка!")
-                .setMessage("Нет соединения с интернетом")
-                .setPositiveButton("Закрыть") { dialog: DialogInterface, _: Int ->
+            builder.setTitle(getString(R.string.network_error_title))
+                .setMessage(getString(R.string.network_error_message))
+                .setPositiveButton(getString(R.string.close)) { dialog: DialogInterface, _: Int ->
                     dialog.cancel()
                     finishAffinity()
                 }

@@ -1,47 +1,64 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/launcher_purple_background"
     android:gravity="center"
-    android:orientation="vertical"
-    android:padding="@dimen/_24sdp">
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <ImageView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/pt_root_ui_bold"
-        android:gravity="center"
-        android:text="@string/server_name"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_24sdp" />
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/launcher_artwork_description"
+        android:scaleType="fitCenter"
+        android:src="@drawable/lc_launcher" />
 
-    <TextView
-        android:id="@+id/serverAddress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_12sdp"
-        android:fontFamily="@font/pt_root_ui_medium"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_16sdp" />
+        android:orientation="vertical"
+        android:padding="@dimen/_24sdp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_12sdp"
-        android:fontFamily="@font/pt_root_ui_medium"
-        android:gravity="center"
-        android:text="@string/connect_hint"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_12sdp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:fontFamily="@font/pt_root_ui_bold"
+            android:gravity="center"
+            android:text="@string/server_name"
+            android:textColor="@color/launcher_white"
+            android:textSize="@dimen/_24sdp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_32sdp"
-        android:fontFamily="@font/pt_root_ui_medium"
-        android:gravity="center"
-        android:text="@string/launcher_credit"
-        android:textColor="#919090"
-        android:textSize="@dimen/_10sdp" />
+        <TextView
+            android:id="@+id/serverAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:fontFamily="@font/pt_root_ui_medium"
+            android:gravity="center"
+            android:textColor="@color/launcher_white"
+            android:textSize="@dimen/_16sdp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:fontFamily="@font/pt_root_ui_medium"
+            android:gravity="center"
+            android:text="@string/connect_hint"
+            android:textColor="@color/launcher_white"
+            android:textSize="@dimen/_12sdp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_32sdp"
+            android:fontFamily="@font/pt_root_ui_medium"
+            android:gravity="center"
+            android:text="@string/launcher_credit"
+            android:textColor="@color/launcher_purple_light"
+            android:textSize="@dimen/_10sdp" />
+    </LinearLayout>
 </LinearLayout>

@@ -3,7 +3,8 @@
     android:id="@+id/root"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@drawable/launcher_purple_background">
 
     <FrameLayout
         android:id="@+id/container"
@@ -45,7 +46,7 @@
                         android:layout_width="@dimen/_16sdp"
                         android:layout_height="@dimen/_16sdp"
                         android:src="@drawable/monitoring_btn"
-                        app:tint="@color/menuTextEnable" />
+                        app:tint="@color/launcher_white" />
 
                     <TextView
                         android:id="@+id/monitoringTV"
@@ -53,8 +54,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4.0dip"
                         android:fontFamily="@font/pt_root_ui_medium"
-                        android:text="Server"
-                        android:textColor="@color/menuTextEnable"
+                        android:text="@string/nav_server"
+                        android:textColor="@color/launcher_white"
                         android:textSize="@dimen/_8sdp" />
                 </LinearLayout>
             </LinearLayout>
@@ -79,7 +80,8 @@
                         android:id="@+id/settingsImage"
                         android:layout_width="@dimen/_16sdp"
                         android:layout_height="@dimen/_16sdp"
-                        android:src="@drawable/settings_btn" />
+                        android:src="@drawable/settings_btn"
+                        app:tint="@color/launcher_white" />
 
                     <TextView
                         android:id="@+id/settingsTV"
@@ -87,8 +89,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4.0dip"
                         android:fontFamily="@font/pt_root_ui_medium"
-                        android:text="Settings"
-                        android:textColor="@color/menuTextDisable"
+                        android:text="@string/nav_settings"
+                        android:textColor="@color/launcher_white"
                         android:textSize="@dimen/_8sdp" />
                 </LinearLayout>
             </LinearLayout>
@@ -156,7 +158,8 @@
                         android:layout_width="@dimen/_21sdp"
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"
-                        android:src="@drawable/forum_icon" />
+                        android:src="@drawable/forum_icon"
+                        app:tint="@color/launcher_white" />
 
                     <TextView
                         android:id="@+id/forumTV"
@@ -164,8 +167,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4.0dip"
                         android:fontFamily="@font/pt_root_ui_medium"
-                        android:text="Форум"
-                        android:textColor="@color/menuTextDisable"
+                        android:text="@string/nav_forum"
+                        android:textColor="@color/launcher_white"
                         android:textSize="@dimen/_8sdp" />
                 </LinearLayout>
             </LinearLayout>
@@ -192,7 +195,8 @@
                         android:layout_width="@dimen/_18sdp"
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"
-                        android:src="@drawable/donate_btn" />
+                        android:src="@drawable/donate_btn"
+                        app:tint="@color/launcher_white" />
 
                     <TextView
                         android:id="@+id/donateTV"
@@ -200,8 +204,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4.0dip"
                         android:fontFamily="@font/pt_root_ui_medium"
-                        android:text="Донат"
-                        android:textColor="@color/menuTextDisable"
+                        android:text="@string/nav_donate"
+                        android:textColor="@color/launcher_white"
                         android:textSize="@dimen/_8sdp" />
                 </LinearLayout>
             </LinearLayout>
@@ -219,13 +223,15 @@
         android:paddingLeft="@dimen/_14sdp"
         android:paddingRight="@dimen/_14sdp"
         android:paddingTop="@dimen/_18sdp"
+        android:layoutDirection="rtl"
+        android:background="@color/launcher_purple_dark"
         android:visibility="gone" >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pt_root_ui_medium"
-            android:text="Выберите сервер"
+            android:text="@string/server_select_title"
             android:textColor="@color/white"
             android:textSize="@dimen/_20sdp" />
 
@@ -235,7 +241,7 @@
             android:layout_marginTop="@dimen/_8sdp"
             android:alpha="0.5"
             android:fontFamily="@font/pt_root_ui_medium"
-            android:text="Выберите сервер на котором вы играете"
+            android:text="@string/server_select_hint"
             android:textColor="@color/white"
             android:textSize="@dimen/_10sdp" />
 
@@ -263,7 +269,7 @@
             android:layout_height="@dimen/_40sdp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/_14sdp"
-            android:background="@drawable/button_red_stroke_rectangle"
+            android:background="@drawable/launcher_button_outline"
             android:paddingLeft="@dimen/_40sdp"
             android:paddingRight="@dimen/_40sdp" >
 
@@ -286,7 +292,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/pt_root_ui_medium"
-                    android:text="Назад"
+                    android:text="@string/back"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_12sdp" />
             </LinearLayout>
