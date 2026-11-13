@@ -47,28 +47,8 @@ jobs:
       - name: Build APK
         run: bash ./gradlew --no-daemon :app:assembleVer_releaseDebug
 
-      - name: Symbolize the NVEvent crash
-        shell: bash
-        run: |
-          symbolizer="$ANDROID_HOME/ndk/28.0.13004108/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-addr2line"
-          libraries="$(find app -type f -path '*/cxx/*' -name libmultiplayer.so -print)"
-          if [ -z "$libraries" ]; then
-            echo "::warning::Unstripped libmultiplayer.so was not found."
-            exit 0
-          fi
-          while IFS= read -r library; do
-            echo "Symbols for $library:"
-            "$symbolizer" -fC -e "$library" 0x1b1ba0
-          done <<< "$libraries"
-
       - uses: actions/upload-artifact@v4
         with:
           name: Rockstar-RolePLay-debug
           path: app/build/outputs/apk/ver_release/debug/*.apk
           if-no-files-found: error
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: Rockstar-RolePLay-native-symbols
-          path: app/build/intermediates/cxx/Debug/**/obj/*/libmultiplayer.so
-          if-no-files-found: warn
