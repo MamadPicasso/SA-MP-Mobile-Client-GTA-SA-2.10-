@@ -3,6 +3,12 @@
     <string name="server_name">Rockstar RolePLay</string>
     <string name="connect_hint">برای اتصال، دکمهٔ بازی را بزنید</string>
     <string name="launcher_credit">توسعهٔ لانچر: T.meYeBiYar</string>
+    <string name="launcher_server_address">5.57.37.215:7777</string>
+    <string name="launcher_connect">ورود به سرور</string>
+    <string name="launcher_missing_data_title">دیتای بازی ناقص است</string>
+    <string name="launcher_missing_data_message">فایل‌های لازم برای اجرای بازی پیدا نشدند:\n%1$s\n\nدیتای کامل و قانونی GTA: San Andreas را در این مسیر قرار بده:\n%2$s</string>
+    <string name="launcher_storage_permission_message">برای دسترسی به دیتای بازی، دسترسی به همهٔ فایل‌ها را فعال کن و دوباره بزن.</string>
+    <string name="launcher_ok">باشه</string>
     <string name="common_google_play_services_notification_ticker">Google Play services error</string>
     <string name="common_google_play_services_notification_needs_installation_title">An application requires installation of Google Play services.</string>
     <string name="common_google_play_services_notification_needs_update_title">An application requires an update for Google Play services.</string>

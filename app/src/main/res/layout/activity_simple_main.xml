@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/launcher_purple_dark"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="32dp"
+    android:layoutDirection="rtl">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/pt_root_ui_medium"
+        android:text="@string/server_name"
+        android:textColor="@color/launcher_white"
+        android:textSize="26sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layoutDirection="ltr"
+        android:text="@string/launcher_server_address"
+        android:textColor="@color/launcher_purple_light"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/playButton"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="@color/launcher_purple"
+        android:fontFamily="@font/pt_root_ui_medium"
+        android:text="@string/launcher_connect"
+        android:textColor="@color/launcher_white"
+        android:textSize="18sp" />
+
+</LinearLayout>
