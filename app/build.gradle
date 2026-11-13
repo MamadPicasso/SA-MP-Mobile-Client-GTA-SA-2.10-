@@ -32,12 +32,12 @@ android {
             applicationIdSuffix ".test"
             versionNameSuffix "-test"
             manifestPlaceholders = [appName:"Rockstar RolePLay Launcher Test"]
-
             if (firebaseConfigPresent) {
                 firebaseCrashlytics {
                     nativeSymbolUploadEnabled false
                 }
             }
+
         }
     }
 

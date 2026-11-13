@@ -19,17 +19,6 @@ jobs:
           distribution: temurin
           java-version: "21"
 
-      - name: Configure Firebase when provided
-        env:
-          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: |
-          if [ -n "$GOOGLE_SERVICES_JSON" ]; then
-            printf '%s' "$GOOGLE_SERVICES_JSON" > app/google-services.json
-            python -m json.tool app/google-services.json > /dev/null
-          else
-            echo "::notice::Firebase config not provided; building without Firebase crash reporting."
-          fi
-
       - name: Locate the runner's Android SDK
         run: |
           sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"

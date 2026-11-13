@@ -25,7 +25,7 @@ Android CMake: required by `app/src/main/cpp/CMakeLists.txt`
 
 JDK: 21
 
-Firebase reporting is optional. Add `app/google-services.json` locally (or set the `GOOGLE_SERVICES_JSON` Actions secret) to enable it; the launcher can build without it.
+Firebase reporting is optional. Add `app/google-services.json` locally to enable it; the launcher builds without it.
 
 Game Cache: Requires GTA: SA v2.10 data files.
 
@@ -46,7 +46,7 @@ Install the Android SDK Platform 36, NDK 28.0.13004108, and CMake in Android Stu
 .\gradlew.bat :app:assembleVer_releaseDebug
 ```
 
-For GitHub Actions, run **Build APK** from the Actions tab. Firebase reporting is enabled when the `GOOGLE_SERVICES_JSON` repository secret is set; it is optional. The APK is uploaded as a workflow artifact.
+For GitHub Actions, run **Build APK** from the Actions tab. Firebase reporting is disabled when no configuration file is present. The APK is uploaded as a workflow artifact.
 
 Make sure the target device has the GTA: SA 2.10 game cache installed, then run the client.
 
