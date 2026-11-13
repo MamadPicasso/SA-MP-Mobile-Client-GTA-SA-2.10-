@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.google.firebase.FirebaseApp
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.russia.game.BuildConfig
 import com.russia.game.R
@@ -248,7 +249,9 @@ class LoaderActivity : AppCompatActivity() {
                 exitProcess(EXIT_SUCCESS_STATUS)
             }
         } catch (e: Exception) {
-            FirebaseCrashlytics.getInstance().recordException(e)
+            if (FirebaseApp.getApps(applicationContext).isNotEmpty()) {
+                FirebaseCrashlytics.getInstance().recordException(e)
+            }
             finish()
             exitProcess(EXIT_SUCCESS_STATUS)
         }
