@@ -56,7 +56,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Build APK
-        run: ./gradlew --no-daemon :app:assembleVer_releaseDebug
+        run: bash ./gradlew --no-daemon :app:assembleVer_releaseDebug
 
       - uses: actions/upload-artifact@v4
         with:
